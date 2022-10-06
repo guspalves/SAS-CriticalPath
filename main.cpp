@@ -7,6 +7,7 @@
  */
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <vector>
 #include <map>
@@ -154,6 +155,9 @@ int main(int argc, char* argv[]){
     }
 
     // printing output
+    cout << fixed;
+    cout << setprecision(6);
+    
     for(int i = 0; i < counterArray.size(); i++){
         cout << "OUTPUT    :";
 
