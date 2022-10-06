@@ -1,9 +1,16 @@
+/**
+ * @authors Gus Alves, Riley Barton
+ * 
+ * @ref
+ * To generate all paths from a graph, the following implementation was used:
+ * https://www.algotree.org/algorithms/tree_graph_traversal/depth_first_search/all_paths_in_a_graph/
+ */
+
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <map>
 #include <float.h>
-
 
 using namespace std;
 
