@@ -77,24 +77,57 @@ int main(int argc, char* argv[]){
 
     findPaths(min, max);
 
-    for(auto x : possiblePaths){
-        cout << "Path: ";
-        for(auto node : x.first){
-            cout << node << " ";
+    int pathSize = possiblePaths.size();
+
+    vector<int> counterArray(pathSize, 0);
+
+    for(int i = 0; i < numReplications; i++){
+        possiblePaths.clear();
+        findPaths(min, max); // always find paths in the exact same order
+
+        // figuring out which path had the max distance
+        double maxDistance = -DBL_MAX;
+        int maxIndex = 0;
+        int currIndex = 0;
+
+        for(auto path : possiblePaths){
+            if(path.second > maxDistance){
+                maxIndex = currIndex;
+                maxDistance = path.second;
+            }
+
+            currIndex++;
         }
 
-        cout << ". " << x.second << endl;
+        counterArray[maxIndex]++;
+    }
+
+    // printing output
+    for(int i = 0; i < counterArray.size(); i++){
+        cout << "OUTPUT    :";
+
+        pair<vector<int>, double> temp = possiblePaths[i];
+        for(int i = 1; i < temp.first.size(); i++){
+            cout << "a" << temp.first[i-1] << "/" << temp.first[i];
+
+            if(i + 1 >= temp.first.size()) cout << ":";
+            else cout << ",";
+        }
+
+        cout << "\t" << counterArray[i] << endl;
     }
 
     // closing the random number file
     randNums.close();
-    exit(1);
 }
 
 double readNextNum(double weight){
     double test = 0.0;
     if(randNums >> test) return (test * weight);
-    else exit(1);
+    else{
+        cerr << "Ran out of random numbers." << endl;
+        exit(1);
+    }
 }
 
 void findPaths(int origin, int dest){
