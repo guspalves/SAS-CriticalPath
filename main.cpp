@@ -20,6 +20,7 @@ ifstream sanFile;
 
 vector< pair<vector<int>, double> > possiblePaths;
 map<int, vector< pair<int, double> > > graph;
+map<string, int> randValues;
 
 double readNextNum(double weight);
 void findPaths(int origin, int dest);
@@ -76,6 +77,8 @@ int main(int argc, char* argv[]){
     // closing san file since we no longer need to read in the paths
     sanFile.close();
 
+    randValues.clear();
+
     findPaths(min, max);
 
     int pathSize = possiblePaths.size();
@@ -104,6 +107,7 @@ int main(int argc, char* argv[]){
     for(int i = 1; i < numReplications; i++){
         possiblePaths.clear();
         counterMap.clear();
+        randValues.clear();
 
         findPaths(min, max); // always find paths in the exact same order
 
@@ -174,8 +178,17 @@ void DFS(int origin, int dest, double runningSum, vector<int>& path){
     
     for (auto node : graph[origin]){
         path.push_back(node.first);
-        double randNum = readNextNum(node.second);
-        // double randNum = 0.0;
+
+        string key = to_string(origin) + to_string(node.first);
+        double randNum = 0.0;
+
+        if(randValues.count(key) == 0){
+            randNum = readNextNum(node.second);
+            randValues[key] = randNum;
+        } else {
+            randNum = randValues[key];
+        }
+
         runningSum += randNum;
         DFS(node.first, dest, runningSum, path);
         runningSum -= randNum;
