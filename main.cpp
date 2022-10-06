@@ -131,7 +131,7 @@ int main(int argc, char* argv[]){
     cout << setprecision(6);
 
     for(int i = 0; i < counterArray.size(); i++){
-        cout << "OUTPUT\t:";
+        cout << "OUTPUT    :";
 
         vector<int> temp = possiblePaths[i].first;
 
