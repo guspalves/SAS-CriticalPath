@@ -81,6 +81,7 @@ int main(int argc, char* argv[]){
     int pathSize = possiblePaths.size();
 
     vector<int> counterArray(pathSize, 0);
+    map<double, vector<int> > counterMap;
 
     // figuring out which path had the max distance
     double maxDistance = -DBL_MAX;
@@ -88,53 +89,22 @@ int main(int argc, char* argv[]){
     int currIndex = 0;
 
     for(auto path : possiblePaths){
-        if(path.second > maxDistance){
-            maxIndex = currIndex;
-            maxDistance = path.second;
-        }
+        counterMap[path.second].push_back(currIndex);
         currIndex++;
-    
     }
 
-    counterArray[maxIndex]++;
+    for(auto pair : counterMap){
+        if(pair.first > maxDistance) maxDistance = pair.first;
+    }
 
-    // /**
-    //  * @brief Delete this
-    //  * 
-    //  */
-    // for(int i = 0; i < numReplications; i++){
-    //     int maxIndx = 0;
-    //     double currMax = -DBL_MAX;
+    for(int indx : counterMap[maxDistance]){
+        counterArray[indx]++;
+    }
 
-    //     for(int j = 0; j < possiblePaths.size(); j++){
-    //         vector<int> currPath = possiblePaths[j].first;
-
-    //         double currentSum = 0.0;
-
-    //         for(int k = 0; k < currPath.size() - 1; k++){
-    //             int origin = currPath[k];
-    //             int dest = currPath[k+1];
-    //             vector< pair<int, double> > adjList = graph[origin];
-    //             for(auto x : adjList){
-    //                 if(x.first == dest){
-    //                     currentSum += readNextNum(x.second);
-    //                     break;
-    //                 }
-    //             }
-    //         }
-
-    //         if(currentSum > currMax){
-    //             currMax = currentSum;
-    //             maxIndx = j;
-    //         }
-    //     }
-
-    //     counterArray[maxIndx]++;
-    // }
-    
-
-    for(int i = 1; i < numReplications; i++){
+    for(int i = 1; i <= numReplications; i++){
         possiblePaths.clear();
+        counterMap.clear();
+
         findPaths(min, max); // always find paths in the exact same order
 
         // figuring out which path had the max distance
@@ -143,15 +113,17 @@ int main(int argc, char* argv[]){
         currIndex = 0;
 
         for(auto path : possiblePaths){
-            if(path.second > maxDistance){
-                maxIndex = currIndex;
-                maxDistance = path.second;
-            }
-
+            counterMap[path.second].push_back(currIndex);
             currIndex++;
         }
 
-        counterArray[maxIndex]++;
+        for(auto pair : counterMap){
+            if(pair.first > maxDistance) maxDistance = pair.first;
+        }
+
+        for(int indx : counterMap[maxDistance]){
+            counterArray[indx]++;
+        }
     }
 
     // printing output
