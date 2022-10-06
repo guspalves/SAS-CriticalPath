@@ -142,7 +142,7 @@ int main(int argc, char* argv[]){
             else cout << ",";
         }
 
-        cout << (double) counterArray[i] / (double) numReplications << endl;
+        cout << "\t" << (double) counterArray[i] / (double) numReplications << endl;
     }
 
     // closing the random number file
