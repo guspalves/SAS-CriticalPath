@@ -131,7 +131,7 @@ int main(int argc, char* argv[]){
     cout << setprecision(6);
 
     for(int i = 0; i < counterArray.size(); i++){
-        cout << "OUTPUT    :";
+        cout << "OUTPUT\t:";
 
         vector<int> temp = possiblePaths[i].first;
 
@@ -142,7 +142,7 @@ int main(int argc, char* argv[]){
             else cout << ",";
         }
 
-        cout << "\t" << (double) counterArray[i] / (double) numReplications << endl;
+        cout << (double) counterArray[i] / (double) numReplications << endl;
     }
 
     // closing the random number file
