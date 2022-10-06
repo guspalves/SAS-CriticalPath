@@ -24,8 +24,6 @@ double readNextNum(double weight);
 void findPaths(int origin, int dest);
 void DFS(int origin, int dest, double runningSum, vector<int>& path);
 
-int randNumCounter = 0;
-
 int main(int argc, char* argv[]){
     if(argc != 4){
         cerr << "Error: Should have 3 parameters passed into SIM. Check project description to determine the 3 inputs." << endl;
@@ -83,61 +81,77 @@ int main(int argc, char* argv[]){
 
     vector<int> counterArray(pathSize, 0);
 
-    /**
-     * @brief Delete this
-     * 
-     */
-    for(int i = 0; i < numReplications; i++){
-        int maxIndx = 0;
-        double currMax = -DBL_MAX;
+    // figuring out which path had the max distance
+    double maxDistance = -DBL_MAX;
+    int maxIndex = 0;
+    int currIndex = 0;
 
-        for(int j = 0; j < possiblePaths.size(); j++){
-            vector<int> currPath = possiblePaths[j].first;
-
-            double currentSum = 0.0;
-
-            for(int k = 0; k < currPath.size() - 1; k++){
-                int origin = currPath[k];
-                int dest = currPath[k+1];
-                vector< pair<int, double> > adjList = graph[origin];
-                for(auto x : adjList){
-                    if(x.first == dest){
-                        currentSum += readNextNum(x.second);
-                        break;
-                    }
-                }
-            }
-
-            if(currentSum > currMax){
-                currMax = currentSum;
-                maxIndx = j;
-            }
+    for(auto path : possiblePaths){
+        if(path.second > maxDistance){
+            maxIndex = currIndex;
+            maxDistance = path.second;
         }
-
-        counterArray[maxIndx]++;
-    }
+        currIndex++;
     
+    }
 
+    counterArray[maxIndex]++;
+
+    // /**
+    //  * @brief Delete this
+    //  * 
+    //  */
     // for(int i = 0; i < numReplications; i++){
-    //     possiblePaths.clear();
-    //     findPaths(min, max); // always find paths in the exact same order
+    //     int maxIndx = 0;
+    //     double currMax = -DBL_MAX;
 
-    //     // figuring out which path had the max distance
-    //     double maxDistance = -DBL_MAX;
-    //     int maxIndex = 0;
-    //     int currIndex = 0;
+    //     for(int j = 0; j < possiblePaths.size(); j++){
+    //         vector<int> currPath = possiblePaths[j].first;
 
-    //     for(auto path : possiblePaths){
-    //         if(path.second > maxDistance){
-    //             maxIndex = currIndex;
-    //             maxDistance = path.second;
+    //         double currentSum = 0.0;
+
+    //         for(int k = 0; k < currPath.size() - 1; k++){
+    //             int origin = currPath[k];
+    //             int dest = currPath[k+1];
+    //             vector< pair<int, double> > adjList = graph[origin];
+    //             for(auto x : adjList){
+    //                 if(x.first == dest){
+    //                     currentSum += readNextNum(x.second);
+    //                     break;
+    //                 }
+    //             }
     //         }
 
-    //         currIndex++;
+    //         if(currentSum > currMax){
+    //             currMax = currentSum;
+    //             maxIndx = j;
+    //         }
     //     }
 
-    //     counterArray[maxIndex]++;
+    //     counterArray[maxIndx]++;
     // }
+    
+
+    for(int i = 1; i < numReplications; i++){
+        possiblePaths.clear();
+        findPaths(min, max); // always find paths in the exact same order
+
+        // figuring out which path had the max distance
+        maxDistance = -DBL_MAX;
+        maxIndex = 0;
+        currIndex = 0;
+
+        for(auto path : possiblePaths){
+            if(path.second > maxDistance){
+                maxIndex = currIndex;
+                maxDistance = path.second;
+            }
+
+            currIndex++;
+        }
+
+        counterArray[maxIndex]++;
+    }
 
     // printing output
     for(int i = 0; i < counterArray.size(); i++){
@@ -155,19 +169,15 @@ int main(int argc, char* argv[]){
         cout << "\t" << (double) counterArray[i] / (double) numReplications << endl;
     }
 
-    cout << "RAND NUM COUNTER: " << randNumCounter << endl;
-
     // closing the random number file
     randNums.close();
 }
 
 double readNextNum(double weight){
     double test = 0.0;
-    randNumCounter++;
     if(randNums >> test) return (test * weight);
     else{
         cerr << "Ran out of random numbers." << endl;
-        cout << "RAND NUM COUNTER: " << randNumCounter << endl;
         exit(1);
     }
 }
@@ -188,8 +198,8 @@ void DFS(int origin, int dest, double runningSum, vector<int>& path){
     
     for (auto node : graph[origin]){
         path.push_back(node.first);
-        //double randNum = readNextNum(node.second);
-        double randNum = 0.0;
+        double randNum = readNextNum(node.second);
+        // double randNum = 0.0;
         runningSum += randNum;
         DFS(node.first, dest, runningSum, path);
         runningSum -= randNum;
