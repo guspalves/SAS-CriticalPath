@@ -101,7 +101,7 @@ int main(int argc, char* argv[]){
         counterArray[indx]++;
     }
 
-    for(int i = 1; i <= numReplications; i++){
+    for(int i = 1; i < numReplications; i++){
         possiblePaths.clear();
         counterMap.clear();
 
