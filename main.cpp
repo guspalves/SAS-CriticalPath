@@ -155,9 +155,9 @@ int main(int argc, char* argv[]){
     }
 
     // printing output
-    cout << fixed;
+    cout << scientific;
     cout << setprecision(6);
-    
+
     for(int i = 0; i < counterArray.size(); i++){
         cout << "OUTPUT    :";
 
