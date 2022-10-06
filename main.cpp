@@ -114,7 +114,7 @@ int main(int argc, char* argv[]){
             else cout << ",";
         }
 
-        cout << "\t" << counterArray[i] << endl;
+        cout << "\t" << (double) counterArray[i] / (double) numReplications << endl;
     }
 
     // closing the random number file
