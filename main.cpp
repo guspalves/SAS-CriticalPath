@@ -17,12 +17,12 @@ using namespace std;
 ifstream randNums;
 ifstream sanFile;
 
-vector< vector<int> > possiblePaths;
-map<int, vector< pair<int, int> > > graph;
+vector< pair<vector<int>, double> > possiblePaths;
+map<int, vector< pair<int, double> > > graph;
 
-double readNextNum();
+double readNextNum(double weight);
 void findPaths(int origin, int dest);
-void DFS(int origin, int dest, vector<int>& path);
+void DFS(int origin, int dest, double runningSum, vector<int>& path);
 
 int main(int argc, char* argv[]){
     if(argc != 4){
@@ -51,11 +51,12 @@ int main(int argc, char* argv[]){
     double min(DBL_MAX), max(-DBL_MAX);
 
     while(sanFile >> origin >> dest >> upper_bound){
-        pair<int, int> newPair(dest, upper_bound);
+        pair<int, double> newPair(dest, upper_bound);
 
         graph[origin].push_back(newPair);
         graph[dest];
-
+        
+        // finding the origin and destination for the graph
         if(origin < min){
             min = origin;
         }
@@ -75,39 +76,47 @@ int main(int argc, char* argv[]){
     sanFile.close();
 
     findPaths(min, max);
-    cout << min << " " << max << endl;
 
     for(auto x : possiblePaths){
         cout << "Path: ";
-        for(auto node : x){
+        for(auto node : x.first){
             cout << node << " ";
         }
-        cout << endl;
+
+        cout << ". " << x.second << endl;
     }
+
+    // closing the random number file
+    randNums.close();
+    exit(1);
 }
 
-double readNextNum(){
+double readNextNum(double weight){
     double test = 0.0;
-    if(randNums >> test) return test;
+    if(randNums >> test) return (test * weight);
     else exit(1);
 }
 
 void findPaths(int origin, int dest){
-    possiblePaths.clear();
-
     vector<int> currPath;
     currPath.push_back(origin);
-    DFS(origin, dest, currPath);
+    double runningSum = 0.0;
+    DFS(origin, dest, runningSum, currPath);
 }
 
-void DFS(int origin, int dest, vector<int>& path){
+void DFS(int origin, int dest, double runningSum, vector<int>& path){
     if(origin == dest){
-        possiblePaths.push_back(path);
-    } else {
-        for (auto node : graph[origin]){
-            path.push_back(node.first);
-            DFS(node.first, dest, path);
-            path.pop_back();
-        }
+        pair<vector<int>, double> temp(path, runningSum);
+        possiblePaths.push_back(temp);
+        return;
+    }
+    
+    for (auto node : graph[origin]){
+        path.push_back(node.first);
+        double randNum = readNextNum(node.second);
+        runningSum += randNum;
+        DFS(node.first, dest, runningSum, path);
+        runningSum -= randNum;
+        path.pop_back();
     }
 }
